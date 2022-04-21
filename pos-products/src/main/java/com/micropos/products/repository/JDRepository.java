@@ -6,6 +6,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Repository;
+import springfox.documentation.annotations.Cacheable;
 
 import java.io.IOException;
 import java.net.URL;
@@ -17,6 +18,7 @@ public class JDRepository implements ProductRepository {
     private List<Product> products = null;
 
     @Override
+    @Cacheable("products")
     public List<Product> allProducts() {
         try {
             if (products == null)

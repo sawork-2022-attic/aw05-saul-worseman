@@ -20,25 +20,6 @@
 #          uri: lb://carts-service
 #          predicates:
 #            - Path=/api/carts/**
-spring:
-  application:
-    name: pos-gateway
-  cloud:
-    gateway:
-      discovery:
-        locator:
-          enabled: true
-      routes:
-        - id: pos-products-service
-          uri: lb://pos-products
-          predicates:
-            - Path=/api/products/**
-            - Method=GET
-        - id: pos-carts-service
-          uri: lb://pos-carts
-          predicates:
-            - Path=/api/cart/**
-            - Method=[GET, POST, PUT, DELETE]
 
 server:
   port: 8080
@@ -47,3 +28,30 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8083/eureka/
+spring:
+  application:
+    name: pos-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: pos-products-service
+          uri: lb://pos-products
+          predicates:
+            - Path=/api/products/**
+            - Method=GET
+          filters:
+            - name: Hystrix
+              args:
+                name: fallbackCommand
+                fallbackUri: forward:/fallback/message
+        - id: pos-carts-service
+          uri: lb://pos-carts
+          predicates:
+            - Path=/api/cart/**
+            - Method=[GET, POST, PUT, DELETE]
+          filters:
+            - name: Hystrix
+              args:
+                name: fallbackCommand
+                fallbackUri: forward:/fallback/message
+

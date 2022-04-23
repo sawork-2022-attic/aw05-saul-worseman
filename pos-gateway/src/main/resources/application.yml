@@ -1,22 +1,49 @@
-server:
-  port: 8080
-
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8083/eureka
-
+#server:
+#  port: 8080
+#
+#eureka:
+#  client:
+#    serviceUrl:
+#      defaultZone: http://localhost:8083/eureka
+#
+#spring:
+#  application:
+#    name: pos-gateway
+#  cloud:
+#    gateway:
+#      routes:
+#        - id: products-service
+#          uri: lb://products-service
+#          predicates:
+#            - Path=/api/products/**
+#        - id: carts-service
+#          uri: lb://carts-service
+#          predicates:
+#            - Path=/api/carts/**
 spring:
   application:
     name: pos-gateway
   cloud:
     gateway:
+      discovery:
+        locator:
+          enabled: true
       routes:
-        - id: products-service
-          uri: lb://product-service
+        - id: pos-products-service
+          uri: lb://pos-products
           predicates:
             - Path=/api/products/**
-        - id: carts-service
-          uri: lb://carts-service
+            - Method=GET
+        - id: pos-carts-service
+          uri: lb://pos-carts
           predicates:
-            - Path=/api/carts/**
+            - Path=/api/cart/**
+            - Method=[GET, POST, PUT, DELETE]
+
+server:
+  port: 8080
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8083/eureka/

@@ -35,6 +35,7 @@ public class ProductController implements ProductsApi {
         if (products.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        var t = new ResponseEntity<>(products, HttpStatus.OK);
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
